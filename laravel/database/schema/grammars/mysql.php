@@ -129,7 +129,7 @@ class MySQL extends Grammar {
 	{
 		if ( ! is_null($column->default))
 		{
-            return " DEFAULT ".($column->default instanceof Expression ? $column->default : "'".$column->default."'");
+            return " DEFAULT ".($column->default instanceof Expression ? $column->default : "'".$this->default_value($column->default)."'");
 		}
 	}
 
@@ -211,6 +211,18 @@ class MySQL extends Grammar {
 		$name = $command->name;
 
 		return 'ALTER TABLE '.$this->wrap($table)." ADD {$type} {$name}({$keys})";
+	}
+
+	/**
+	 * Generate the SQL statement for a rename table command.
+	 *
+	 * @param  Table    $table
+	 * @param  Fluent   $command
+	 * @return string
+	 */
+	public function rename(Table $table, Fluent $command)
+	{
+		return 'RENAME TABLE '.$this->wrap($table).' TO '.$this->wrap($command->name);
 	}
 
 	/**
